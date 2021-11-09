@@ -1,6 +1,14 @@
-function polling() {
-  // console.log("polling");
-  setTimeout(polling, 1000 * 30);
+// function that injects code to a specific tab
+function injectScript(tabId: number) {
+  chrome.scripting.executeScript({
+    target: { tabId: tabId },
+    files: ["js/inject.js"],
+  });
 }
 
-polling();
+// adds a listener to tab change
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.url) {
+    injectScript(tabId);
+  }
+});
